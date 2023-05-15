@@ -5,30 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54e906ca-5538-4edb-a102-566e9b5089e4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datasets/codebase_all/jsrc/101.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datasets/codebase_all/jsrc/103.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datasets/codebase_all/jsrc/441.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datasets/codebase_all/jsrc/663.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/datasets/query_all/test_all/query_test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/codebase_all_featurize_asts/features.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/codebase_all_featurize_asts/tfidf.pkl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/codebase_all_featurize_asts/vocab.pkl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/codebase_convert/jsrc.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/outputs/query_convert/query_test.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/reference/src/main/antlr4/JavaLexer.g4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/reference/src/main/antlr4/JavaParser.g4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/reference/src/main/java/ConvertJava.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/reference/src/main/python/similar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,20 +25,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/huangxin/code/java/aroma-convert-java&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/huangxin/code/java/aroma-convert-java",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/reference/src/main/python" />
@@ -109,7 +88,6 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Application.ConvertJava" />
       <item itemvalue="Python.similar" />
     </list>
     <recent_temporary>
@@ -128,7 +106,7 @@
       <updated>1684119667581</updated>
       <workItem from="1684119669796" duration="8419000" />
       <workItem from="1684136125236" duration="10131000" />
-      <workItem from="1684153086307" duration="303000" />
+      <workItem from="1684153086307" duration="1699000" />
     </task>
     <servers />
   </component>

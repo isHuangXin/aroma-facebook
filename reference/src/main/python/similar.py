@@ -897,14 +897,11 @@ def collect_features_as_list(ast, is_init, is_counter):
 
 def read_and_featurize_record_file(rpath):
     with open(rpath, "r") as inp:
-        ret = []
         for line in inp:
             obj = json.loads(line)
             obj["features"] = collect_features_as_list(obj["ast"], False, False)[0]
             obj["index"] = -1
-            ret.append(obj)
-        return ret
-
+            return obj
 
 
 def test_record_at_index(idx):

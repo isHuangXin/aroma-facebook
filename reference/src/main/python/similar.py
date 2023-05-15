@@ -695,7 +695,7 @@ def get_completions3(query_record, candidate_records, top_n, threshold1, thresho
 
 
 def print_match_index(query_record, candidate_records):
-    print(f"print_match_index {query_record}  {candidate_records}")
+    # print(f"print_match_index {query_record}  {candidate_records}")
     ret = -1
     i = 0
     for (candidate_record, score, pruned_record, pruned_score) in candidate_records:
@@ -714,20 +714,24 @@ def print_match_index(query_record, candidate_records):
 
 
 def find_indices_similar_to_features(
-    vectorizer, counter_matrix, feature_lists, num_similars, min_similarity_score
+    vectorizer, counter_matrix, feature_lists, num_similars, min_similarity_score, topK
 ):
     doc_counter_vector = vectorizer.transform(feature_lists)
     len = my_similarity_score(doc_counter_vector, doc_counter_vector).flatten()[0]
     cosine_similarities = my_similarity_score(
         doc_counter_vector, counter_matrix
     ).flatten()
-    related_docs_indices = [
-        i
-        for i in cosine_similarities.argsort()[::-1]
-        if cosine_similarities[i] > min_similarity_score * len
-    ][0:num_similars]
-    return [(j, cosine_similarities[j]) for j in related_docs_indices]
+    # related_docs_indices = [
+    #     i
+    #     for i in cosine_similarities.argsort()[::-1]
+    #     if cosine_similarities[i] > min_similarity_score * len
+    # ][0:num_similars]
+    # return [(j, cosine_similarities[j]) for j in related_docs_indices]
 
+    res = [i
+           for i in cosine_similarities.argsort()[::-1]
+           ][:topK]
+    return [(j, cosine_similarities[j]) for j in res]
 
 def find_similarity_score_features(record1, record2):
     features_as_counter1 = Counter(record1["features"])
@@ -798,6 +802,7 @@ def find_similar(
     num_similars,
     min_similarity_score,
     min_pruned_score,
+    topK
 ):
     print("Query features: ")
     print_features(query_record["features"])
@@ -807,13 +812,15 @@ def find_similar(
         [feature_list_to_doc(query_record)],
         num_similars,
         min_similarity_score,
+        topK
     )
     candidate_records = []
     for (idx, score) in similars:
         pruned_record = prune_second_jd(query_record, records[idx])
         pruned_score = find_similarity_score_features(query_record, pruned_record)
-        if pruned_score > min_pruned_score:
-            candidate_records.append((records[idx], score, pruned_record, pruned_score))
+        # if pruned_score > min_pruned_score:
+        #     candidate_records.append((records[idx], score, pruned_record, pruned_score))
+        candidate_records.append((records[idx], score, pruned_record, pruned_score))
     candidate_records = sorted(candidate_records, key=lambda v: v[3], reverse=True)
     logging.info(f"# of similar snippets = {len(candidate_records)}")
     return candidate_records
@@ -831,7 +838,7 @@ def cluster_and_intersect(
     return clustered_records
 
 
-def print_similar_and_completions(query_record, records, vectorizer, counter_matrix):
+def print_similar_and_completions(query_record, records, vectorizer, counter_matrix, topK):
     candidate_records = find_similar(
         query_record,
         records,
@@ -840,6 +847,7 @@ def print_similar_and_completions(query_record, records, vectorizer, counter_mat
         config.NUM_SIMILARS,
         config.MIN_SIMILARITY_SCORE,
         config.MIN_PRUNED_SCORE,
+        topK
     )
     print_match_index(query_record, candidate_records)
     clustered_records = cluster_and_intersect(
@@ -861,6 +869,7 @@ def print_similar_and_completions(query_record, records, vectorizer, counter_mat
         # idxs = ({clustered_record[1:]}), score = {candidate_records[clustered_record[1]][3]}")
         print(ast_to_code_with_full_lines(clustered_record[0]["ast"], clustered_record[1]["ast"]))
 
+    search_result_id = []
     if config.PRINT_SIMILAR:
         j = 0
         for (candidate_record, score, pruned_record, pruned_score) in candidate_records:
@@ -869,7 +878,9 @@ def print_similar_and_completions(query_record, records, vectorizer, counter_mat
             print(f"---------- similar code (pruned) ------------ score = {pruned_score}")
             print(ast_to_code(pruned_record["ast"]))
             j += 1
+            search_result_id.append(candidate_record['index'])
     print("", flush=True)
+    return search_result_id
 
 
 def collect_features_as_list(ast, is_init, is_counter):
@@ -897,11 +908,13 @@ def collect_features_as_list(ast, is_init, is_counter):
 
 def read_and_featurize_record_file(rpath):
     with open(rpath, "r") as inp:
+        ret = []
         for line in inp:
             obj = json.loads(line)
             obj["features"] = collect_features_as_list(obj["ast"], False, False)[0]
             obj["index"] = -1
-            return obj
+            ret.append(obj)
+        return ret
 
 
 def test_record_at_index(idx):
@@ -910,28 +923,59 @@ def test_record_at_index(idx):
         print_similar_and_completions(record, records, vectorizer, counter_matrix)
 
 
-def featurize_and_test_record(record_files, keywords):
+# def featurize_and_test_record(record_files, keywords):
+#     set_tmp = None
+#     record_final = None
+#     for record_file in record_files:
+#         record = read_and_featurize_record_file(record_file)
+#         if record is not None:
+#             record_final = record
+#             if set_tmp is not None:
+#                 set_tmp = set_tmp & Counter(record["features"])
+#             else:
+#                 set_tmp = Counter(record["features"])
+#             # need to figure out how to merge asts as well
+#     if set_tmp is None:
+#         set_tmp = Counter()
+#     for keyword in keywords:
+#         set_tmp[vocab.get_index(keyword)] += 1
+#     if record_final is None:
+#         record_final = {"ast": None, "index": -1, "features": list(set_tmp.elements())}
+#     else:
+#         record_final["features"] = list(set_tmp.elements())
+#     if len(record_final["features"]) > 0:
+#         print_similar_and_completions(record_final, records, vectorizer, counter_matrix)
+
+
+# 为了同时计算多条query
+def featurize_and_test_record(record_files, keywords, topK):
     set_tmp = None
     record_final = None
+    all_search_result_ids = []
     for record_file in record_files:
-        record = read_and_featurize_record_file(record_file)
-        if record is not None:
-            record_final = record
-            if set_tmp is not None:
-                set_tmp = set_tmp & Counter(record["features"])
-            else:
+        record__ = read_and_featurize_record_file(record_file)
+        for record in record__:
+            if record is not None:
+                record_final = record
+                # if set_tmp is not None:
+                #     set_tmp = set_tmp & Counter(record["features"])
+                # else:
+                #     set_tmp = Counter(record["features"])
                 set_tmp = Counter(record["features"])
-            # need to figure out how to merge asts as well
-    if set_tmp is None:
-        set_tmp = Counter()
-    for keyword in keywords:
-        set_tmp[vocab.get_index(keyword)] += 1
-    if record_final is None:
-        record_final = {"ast": None, "index": -1, "features": list(set_tmp.elements())}
-    else:
-        record_final["features"] = list(set_tmp.elements())
-    if len(record_final["features"]) > 0:
-        print_similar_and_completions(record_final, records, vectorizer, counter_matrix)
+                # need to figure out how to merge asts as well
+            if set_tmp is None:
+                set_tmp = Counter()
+            for keyword in keywords:
+                set_tmp[vocab.get_index(keyword)] += 1
+            if record_final is None:
+                record_final = {"ast": None, "index": -1, "features": list(set_tmp.elements())}
+            else:
+                record_final["features"] = list(set_tmp.elements())
+            if len(record_final["features"]) > 0:
+                search_result_id = print_similar_and_completions(record_final, records, vectorizer, counter_matrix, topK)
+                all_search_result_ids.append(search_result_id)
+            print("Search Done!")
+    return all_search_result_ids
 
 
 def test_all():
@@ -1053,9 +1097,11 @@ setup(options.corpus)
     os.path.join(options.working_dir, config.TFIDF_FILE),
     os.path.join(options.working_dir, config.FEATURES_FILE))
 
+topK = 10
 if options.index_query is not None:
     test_record_at_index(options.index_query)
 elif len(options.file_query) > 0 or len(options.keywords) > 0:
-    featurize_and_test_record(options.file_query, options.keywords)
+    search_result = featurize_and_test_record(options.file_query, options.keywords, topK)
 elif options.testall:
     test_all()
+print("main done!")
